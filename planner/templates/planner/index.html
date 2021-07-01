@@ -1,0 +1,21 @@
+{% extends "planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div class="w3-container w3-padding w3-margin">
+<p class="w3-center w3-animate-left">
+{% if person.user.is_authenticated %}
+Welcome, <strong>{{ person.name }}</strong>,
+{% else %}
+Welcome
+{% endif %}
+to the <span class="w3-sofia">iPlan</span> website, a friendly planner app to schedule your tasks and meetings.
+</p>
+<p class="w3-center w3-animate-right">
+Browse through this website by clicking on the links in the menu. 
+{% if not person.user.is_authenticated %}
+When you are ready to create your own tasks and meetings, please <a href="{% url 'planner:contact' %}">contact us</a> to set up a demo account or login via GitHub. The database is reset daily at midnight EST and your accounts and data will not be saved, since this is for demonstration purposes only. Thank you for trying out <span class="w3-sofia">iPlan</span>!
+{% endif %}
+</p>
+</div>
+{% endblock content %}

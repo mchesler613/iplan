@@ -1,0 +1,23 @@
+{% extends "planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div class="w3-container w3-padding w3-margin">
+<p>
+{% if user.is_authenticated and user.person %}
+Welcome, <strong>{{ user.person.name }}</strong>,
+{% else if user.is_authenticated and user.person is None %}
+There is no account associated with this login. Please try again or contact the administrator. Thank you.
+{% else %}
+Welcome
+{% endif %}
+to the <em>iPlan</em> website, a friendly planner app to schedule your tasks and meetings.
+</p>
+<p>
+Browse through this website by clicking on the links in the sidebar. 
+{% if not user.username %}
+When you are ready to create your own tasks and meetings, please <a href="{% url 'planner:contact' %}">contact us</a> to set up a demo account.
+{% endif %}
+</p>
+</div>
+{% endblock content %}

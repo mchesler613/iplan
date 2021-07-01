@@ -1,0 +1,243 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+
+<h2><a href="{% url 'planner:person_detail' person.pk %}">{{ person.name }}</a>'s Meetings</h2>
+<p>Today's Date and Time: {{ time_now }}</p>
+<div class="w3-row w3-container w3-theme-14 w3-text-theme w3-margin">
+  <a href="javascript:void(0)" onclick="openTab(event, 'Meeting_Today');">
+    <div id="Meeting_TodayTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Today</div>
+  </a>
+  <a href="javascript:void(0)" onclick="openTab(event, 'Meeting_Future');">
+    <div id="Meeting_FutureTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Future</div>
+  </a>
+  <a href="javascript:void(0)" onclick="openTab(event, 'Meeting_Expired');">
+    <div id="Meeting_ExpiredTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Expired</div>
+  </a>
+  {% if user.is_authenticated and person.user == user %}
+  <a href="javascript:void(0)" onclick="openTab(event, 'Meeting_New');">
+    <div id="Meeting_NewTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">New</div>
+  </a>
+  {% endif %}
+</div>
+
+<div id="Meeting_Today" class="w3-container w3-margin w3-responsive tab w3-border-red">
+  <h3>Today's Meetings</h3>
+  <table class="w3-table-all w3-hoverable">
+    <tr class="w3-theme-l1">
+      <th>Title</th>
+      <th>Purpose</th>
+      <th>When</th>
+      <th>With</th>
+      <th>Created By</th>
+    </tr>
+    {% for meeting in today_page_obj %}
+    <tr>
+      <td>{{ meeting.title }}</td>
+      <td>{{ meeting.purpose }}</td>
+      <td>{{ meeting.date }} {{ meeting.time }}</td>
+      <td class="w3-center">
+        {% comment %}
+        {{ meeting.participants.all|join:', ' }}
+        {% endcomment %}
+        {% for participant in meeting.participants.all %}
+        <a href="{% url 'planner:person_detail' participant.pk %}">
+          <img src="{{ participant.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ participant.name }}">
+        </a>
+        {% endfor %}
+      </td>
+      <td class="w3-center">
+        <a href="{% url 'planner:person_detail' meeting.created_by.pk %}">
+        <img src="{{ meeting.created_by.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ meeting.created_by }}">
+        </a>
+        {% if user.is_authenticated and person.user == user and meeting.created_by == person %}
+        <p>
+        <a href="{% url 'planner:meeting_update_form' meeting.pk person.pk %}">
+          <i class='far fa-edit'></i>
+        </a>
+        <a href="{% url 'planner:meeting_confirm_delete' meeting.pk person.pk %}">
+          <i class='far fa-trash-alt'></i>
+        </a>
+      </p>  
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if today_page_obj.has_other_pages %}
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if today_page_obj.has_previous %}
+        <a class="w3-button" href="?meeting=today&page=1">&laquo;</a>
+        <a class="w3-button" href="?meeting=today&page={{today_page_obj.previous_page_number}}">{{today_page_obj.previous_page_number}}</a>
+      {% endif %}
+      <a class="w3-button w3-red">{{today_page_obj.number}}</a>
+      {% if today_page_obj.has_next %}
+        <a class="w3-button" href="?meeting=today&page={{ today_page_obj.next_page_number }}">{{ today_page_obj.next_page_number }}</a>
+        <a class="w3-button" href="?meeting=today&page={{ today_page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+
+<div id="Meeting_Future" class="w3-container w3-margin w3-responsive tab" style="display:none">
+  <h3>Future Meetings</h3>
+  <table class="w3-table-all w3-hoverable">
+    <tr class="w3-theme-l1">
+      <th>Title</th>
+      <th>Purpose</th>
+      <th>When</th>
+      <th>With</th>
+      <th>Created By</th>
+    </tr>
+    {% for meeting in future_page_obj %}
+    <tr>
+      <td>{{ meeting.title }}</td>
+      <td>{{ meeting.purpose }}</td>
+      <td>{{ meeting.date }} {{ meeting.time }}</td>
+      <td class="w3-center">
+        {% comment %}
+        {{ meeting.participants.all|join:', ' }}
+        {% endcomment %}
+        {% for participant in meeting.participants.all %}
+        <a href="{% url 'planner:person_detail' participant.pk %}">
+          <img src="{{ participant.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ participant.name }}">
+        </a>
+        {% endfor %}
+      </td>
+      <td class="w3-center">    
+        <a href="{% url 'planner:person_detail' meeting.created_by.pk %}">  
+        <img src="{{ meeting.created_by.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ meeting.created_by }}">
+        </a>
+        {% if user.is_authenticated and person.user == user and meeting.created_by == person %}
+        <p>
+          <a href="{% url 'planner:meeting_update_form' meeting.pk person.pk %}">
+            <i class='far fa-edit'></i>
+          </a>
+          <a href="{% url 'planner:meeting_confirm_delete' meeting.pk person.pk %}">
+            <i class='far fa-trash-alt'></i>
+          </a>
+        </p>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  {% if future_page_obj.has_other_pages %}
+    <div class="w3-center">
+      <div class="w3-bar w3-border w3-round">
+        {% if future_page_obj.has_previous %}
+          <a class="w3-button" href="?meeting=future&page=1">&laquo;</a>
+          <a class="w3-button" href="?meeting=future&page={{ future_page_obj.previous_page_number }}">{{ future_page_obj.previous_page_number }}</a>
+        {% endif %}
+        <a class="w3-button w3-red">{{ future_page_obj.number }}</a>
+        {% if future_page_obj.has_next %}
+          <a class="w3-button" href="?meeting=future&page={{ future_page_obj.next_page_number }}">{{ future_page_obj.next_page_number }}</a>
+          <a class="w3-button" href="?meeting=future&page={{ future_page_obj.paginator.num_pages }}">&raquo;</a>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<div id="Meeting_Expired" class="w3-container w3-margin w3-responsive tab" style="display:none">
+  <h3>Expired Meetings</h3>
+  <table class="w3-table-all w3-hoverable w3-center">
+    <tr class="w3-theme-l1">
+      <th>Title</th>
+      <th>Purpose</th>
+      <th>When</th>
+      <th>With</th>
+      <th>Created By</th>
+    </tr>
+    {% for meeting in expired_page_obj %}  
+    <tr>
+      <td>{{ meeting.title }}</td>
+      <td>{{ meeting.purpose }}</td>
+      <td>{{ meeting.date }} {{ meeting.time }}</td>
+      <td class="w3-center">
+        {% comment %}
+        {{ meeting.participants.all|join:', ' }}
+        {% endcomment %}
+        {% for participant in meeting.participants.all %}
+        <a href="{% url 'planner:person_detail' participant.pk %}">
+          <img src="{{ participant.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ participant.name }}">
+        </a>
+        {% endfor %}
+      </td>
+      <td class="w3-center">
+        <a href="{% url 'planner:person_detail' meeting.created_by.pk %}">       
+        <img src="{{ meeting.created_by.bio.image }}" width="30px" height="30px" class="w3-circle" title="{{ meeting.created_by }}">
+        </a>
+        {% if user.is_authenticated and person.user == user and meeting.created_by == person %}
+          <a href="{% url 'planner:meeting_confirm_delete' meeting.pk person.pk %}">
+            <i class='far fa-trash-alt'></i>
+          </a>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if expired_page_obj.has_other_pages %}
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if expired_page_obj.has_previous %}
+        <a class="w3-button" href="?meeting=expired&page=1">&laquo;</a>
+        <a class="w3-button" href="?meeting=expired&page={{ expired_page_obj.previous_page_number }}">{{ expired_page_obj.previous_page_number }}</a>
+      {% endif %}
+      <a class="w3-button w3-red">{{ expired_page_obj.number }}</a>
+      {% if expired_page_obj.has_next %}
+        <a class="w3-button" href="?meeting=expired&page={{ expired_page_obj.next_page_number }}">{{ expired_page_obj.next_page_number }}</a>
+        <a class="w3-button" href="?meeting=expired&page={{ expired_page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if user.is_authenticated and person.user == user %}
+<div id="Meeting_New" class="w3-container w3-margin w3-responsive tab" style="display:none">
+  <form class="w3-container w3-card-4 w3-theme-14 w3-text-theme method="post">
+    <h2 class="w3-center w3-animate-top">New Meeting</h2>
+    <table class="w3-table-all">
+    {% csrf_token %}
+    {{ form }}
+    </table>
+    <button formmethod="post" class="w3-button w3-section w3-theme w3-ripple w3-round w3-margin">Save</button>
+  </form>
+</div>
+{% endif %}
+<script>
+  initTabs('Meeting_Today');
+</script>
+{% endblock content %}

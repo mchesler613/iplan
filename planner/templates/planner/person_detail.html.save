@@ -1,0 +1,130 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<h2>
+  Welcome, {{ person.name }}!
+  {% if user.is_authenticated and person.user == user %}
+  <a href="{% url 'planner:person_detail_update_form' person.pk %}">
+    {% load static %}
+    <img class="w3-image" src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+  </a>
+  {% endif %}
+</h2>
+<div class="w3-container w3-cell" style="width:40%">
+  <div class="w3-card w3-margin" >
+    <div class="w3-display-container">
+      <img class="w3-image" src="{{ person.bio.image }}" style="width:100%">
+      <div class="w3-display-bottomright w3-container">
+        <!--
+        <a href="{% url 'planner:bio_update_form' person.pk %}">
+          {% load static %}
+          <img class="w3-image" src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+        </a>
+        -->
+      </div>
+    </div>
+    <div class="w3-container w3-center">
+      <div class="w3-cell-row">
+        <p>
+        <div class="w3-container w3-cell"><strong>{{ person.name }}</strong>
+          <!--
+          <a href="{% url 'planner:person_update_form' person.pk %}">
+            {% load static %}
+            <img class="w3-image" src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+          </a>
+          -->
+        </p>
+        </div>
+        <div class="w3-container w3-cell">
+          {{ person.bio }}
+          <!--
+          <a href="{% url 'planner:bio_update_form' person.bio.pk %}">
+            {% load static %}
+            <img src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+          </a>
+          -->
+        </div>
+        <div class="w3-container w3-cell">
+          {{ person.email }}
+        </div>
+          <!--
+          <a href="{% url 'planner:email_update_form' person.email.pk %}">
+            {% load static %}
+            <img src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+          </a>
+          -->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="w3-container w3-cell" style="width:40%">
+  <h5>
+    <a href="{% url 'planner:task_list' person.pk %}">{{ person.name }}'s Tasks</a>
+    Due Today</h5>
+    <table class="w3-table-all w3-hoverable">
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Due</th>
+      </tr>
+      {% for task in tasks_due_today %}
+      <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        <td>
+          {{ task.deadline }}
+          <!--
+          <a href="{% url 'planner:task_update_form' task.pk %}">
+            {% load static %}
+            <img src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+          </a>
+          -->
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td>None.</td>
+        <td>None.</td>
+        <td>None.</td>
+      </tr>
+      {% endfor %}
+    </table>
+  <h5>
+    <a href="{% url 'planner:meeting_list' person.pk %}">{{ person.name }}'s Meetings</a>
+    Today</h5>
+    <table class="w3-table-all w3-hoverable">
+    <tr>
+      <th>Title</th>
+      <th>Purpose</th>
+      <th>When</th>
+      <th>With</th>
+    </tr>
+    {% for meeting in meetings_today %}
+    <tr>
+      <td>{{ meeting.title }}</td>
+      <td>{{ meeting.purpose }}</td>
+      <td>{{ meeting.date }} {{ meeting.time }}</td>
+      <td>
+        {{ meeting.participants.all|join:', ' }}
+        <!--
+        <a href="{% url 'planner:meeting_update_form' meeting.pk person.pk %}">
+          {% load static %}
+          <img src="{% static 'img/pencil.png' %}" width="16px" height="16px" alt="Edit">
+        </a>
+        -->
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+      <td>None.</td>
+    </tr>
+    {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock content %}

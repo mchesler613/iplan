@@ -1,0 +1,182 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+
+<h2><a href="{% url 'planner:person_detail' person.pk %}">{{ person.name }}</a>'s Tasks</h2>
+<p>Today's Date and Time: {{ time_now }}</p>
+<div class="w3-row w3-container w3-theme-14 w3-text-theme w3-margin">
+  <a href="javascript:void(0)" onclick="openTab(event, 'Task_Today');">
+    <div id="Task_TodayTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Today</div>
+  </a>
+  <a href="javascript:void(0)" onclick="openTab(event, 'Task_Future');">
+    <div id="Task_FutureTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Future</div>
+  </a>
+  <a href="javascript:void(0)" onclick="openTab(event, 'Task_Expired');">
+    <div id="Task_ExpiredTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">Expired</div>
+  </a>
+  {% if user.is_authenticated and person.user == user %}
+  <a href="javascript:void(0)" onclick="openTab(event, 'Task_New');">
+    <div id="Task_NewTitle" class="w3-quarter tablink w3-bottombar w3-hover-light-grey w3-padding">New</div>
+  </a>
+  {% endif %}
+</div>
+
+<div id="Task_Future" class="w3-container w3-margin w3-responsive tab" style="display:none">
+    <h3 class="w3-center">Future Tasks</h3>
+    <div class="w3-row">
+      {% for task in future_page_obj %}
+      <div class="w3-container w3-third w3-mobile w3-center">
+        <div class="w3-card-4 w3-margin w3-round">
+          <header class="w3-container w3-theme-light">
+            <h5>{{ task.title }}</h5>
+          </header>
+          <div class="w3-container">
+            <p title="{{ task.description }}">{{ task.description | truncatechars:40 | urlizetrunc:15 }}</p>
+          </div>
+          <footer class="w3-container w3-pink">
+            <h5>{{ task.deadline }}</h5>
+          </header>
+
+          {% if user.is_authenticated and person.user == user %}
+          <a href="{% url 'planner:task_update_form' task.pk %}">
+          <i class='far fa-edit'></i>
+          </a>
+          
+          <a href="{% url 'planner:task_confirm_delete' task.pk %}">
+          <i class='far fa-trash-alt'></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      {% endfor %}
+    </div>  
+  {% if future_page_obj.has_other_pages %}
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if future_page_obj.has_previous %}
+        <a class="w3-button" href="?task=future&page=1">&laquo;</a>
+        <a class="w3-button" href="?task=future&page={{ future_page_obj.previous_page_number }}">{{ future_page_obj.previous_page_number }}</a>
+      {% endif %}
+      <a class="w3-button w3-red">{{ future_page_obj.number }}</a>
+      {% if future_page_obj.has_next %}
+        <a class="w3-button" href="?task=future&page={{ future_page_obj.next_page_number }}">{{ future_page_obj.next_page_number }}</a>
+        <a class="w3-button" href="?task=future&page={{ future_page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+<div id="Task_Today" class="w3-container w3-margin w3-responsive tab">
+    <h3 class="w3-center">Tasks Due Today</h3>
+    <div class="w3-row">
+        {% for task in today_page_obj %}
+        <div class="w3-container w3-third w3-mobile w3-center">
+          <div class="w3-card-4 w3-round w3-margin">
+            <header class="w3-container w3-theme-light">
+              <h5>{{ task.title }}</h5>
+            </header>
+          <div class="w3-container">
+            <p title="{{ task.description }}">{{ task.description | truncatechars:40 | urlizetrunc:15 }}</p>
+          </div>
+          <footer class="w3-container w3-pink">
+            <h5>{{ task.deadline }}</h5>
+          </footer>
+          {% if user.is_authenticated and person.user == user %}
+          <a href="{% url 'planner:task_update_form' task.pk %}">
+          <i class='far fa-edit'></i>
+          </a>
+          <a href="{% url 'planner:task_confirm_delete' task.pk %}">
+          <i class='far fa-trash-alt'></i>
+          </a>
+          {% endif %}
+          </div>
+        </div>
+        {% empty %}
+        {% endfor %}
+    </div>
+  {% if today_page_obj.has_other_pages %}
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if today_page_obj.has_previous %}
+        <a class="w3-button" href="?task=today&page=1">&laquo;</a>
+        <a class="w3-button" href="?task=today&page={{ today_page_obj.previous_page_number }}">{{today_page_obj.previous_page_number}}</a>
+      {% endif %}
+      {% comment %}
+      Page {{ today_page_obj.number }} / {{ today_page_obj.paginator.num_pages }}
+      {% endcomment %}
+      <a class="w3-button w3-red">{{ today_page_obj.number }}</a>
+
+      {% if today_page_obj.has_next %}
+        <a class="w3-button" href="?task=today&page={{ today_page_obj.next_page_number }}">{{today_page_obj.next_page_number}}</a>
+        <a class="w3-button" href="?task=today&page={{ today_page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+
+<div id="Task_Expired" class="w3-container w3-margin w3-responsive tab" style="display:none">
+    <h3 class="w3-center">Expired Tasks</h3>
+    <div class="w3-row">
+      {% for task in expired_page_obj %}
+      <div class="w3-container w3-third w3-mobile w3-center">
+        <div class="w3-card-4  w3-round w3-margin">
+          <header class="w3-container w3-theme-light">
+            <h5>{{ task.title }}</h5>
+          </header>
+        <div class="w3-container">
+          <p title="{{ task.description }}">{{ task.description | truncatechars:40 }}</p>
+        </div>
+        <footer class="w3-container w3-pink">
+          <h5>{{ task.deadline }}</h5>
+        </footer>
+        {% if user.is_authenticated and person.user == user %}
+            <a href="{% url 'planner:task_confirm_delete' task.pk %}" class="w3-button">
+            <i class='far fa-trash-alt'></i>
+            </a>
+        {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      {% endfor %}
+    </div>
+  {% if expired_page_obj.has_other_pages %}
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if expired_page_obj.has_previous %}
+        <a class="w3-button" href="?task=expired&page=1">&laquo;</a>
+        <a class="w3-button" href="?task=expired&page={{ expired_page_obj.previous_page_number }}">{{ expired_page_obj.previous_page_number }}</a>
+      {% endif %}
+        <a class="w3-button w3-red">{{ expired_page_obj.number }}</a>
+      {% if expired_page_obj.has_next %}
+        <a class="w3-button" href="?task=expired&page={{ expired_page_obj.next_page_number }}">{{ expired_page_obj.next_page_number }}</a>
+        <a class="w3-button" href="?task=expired&page={{ expired_page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+</div>
+
+{% if user.is_authenticated and person.user == user %}
+<div id="Task_New" class="w3-container w3-margin w3-responsive tab w3-center" style="display:none">
+  <form class="w3-container w3-card-4 w3-theme-14 w3-text-theme w3-center" method="post">
+    <h2 class="w3-center w3-animate-top">New Task for <a href="{% url 'planner:person_detail' person.pk %}">{{ person.name }}</a></h2>
+    {% csrf_token %}
+    <table class="w3-table-all"> 
+    {{ form }}
+    </table>
+    <button class="w3-button w3-section w3-theme w3-ripple w3-round w3-margin">Save</button>
+  </form>
+</div>
+{% endif %}
+<script>
+  initTabs('Task_Today');
+</script>
+{% endblock content %}

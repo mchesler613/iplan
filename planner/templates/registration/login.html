@@ -1,0 +1,47 @@
+{% extends "planner/base.html" %}
+
+{% block content %}
+<div class="w3-container w3-margin">
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+<div class="w3-row w3-mobile">
+<div class="w3-container s5 w3-card">
+  <form class="w3-container w3-margin w3-center" method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+    <div class="w3-table w3-bordered w3-animate-opacity w3-mobile">
+    <div class="w3-center w3-margin">
+        <span>{{ form.username.label_tag }}</span>
+        <span>{{ form.username }}</span>
+    </div>
+    <div class="w3-center w3-margin">
+        <span>{{ form.password.label_tag }}</span>
+        <span>{{ form.password }}</span>
+    </div>
+    </div>
+  <button class="w3-button w3-section w3-theme w3-ripple w3-round w3-margin" value="login">Login</button>
+  <input type="hidden" name="next" value="{{ next }}">
+  </form>
+</div>
+  <div class="w3-container s2"></div>
+  <div class="w3-container s5 w3-card">
+  <p class="w3-center">
+    <a href="{% url 'planner:github_login' %}" class="w3-button w3-theme w3-round w3-center">
+    <i class="fa fa-github fa-fw"></i>
+    <span>Login with GitHub</span>
+    </a>
+  </p>
+  </div>
+</div>
+
+</div>
+{% endblock %}

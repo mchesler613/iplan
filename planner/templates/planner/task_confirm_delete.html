@@ -1,0 +1,26 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<h1>Task for <a href="{% url 'planner:person_detail' task.person.pk %}">{{ task.person.name }}</a></h1>
+<form class="w3-container w3-margin w3-padding" method="post">
+  {% csrf_token %}
+  <h3>Are you sure you want to delete this task?</h3>
+  <table class="w3-table-all w3-hoverable">
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Due</th>
+    </tr>
+    <tr>
+      <td>{{ task.title }}</td>
+      <td>{{ task.description }}</td>
+      <td> {{ task.deadline }} </td>
+    </tr>
+  </table>
+  <br>
+  <button class="w3-btn w3-light-gray">Delete</button>
+</form>
+{% endblock content %}
+

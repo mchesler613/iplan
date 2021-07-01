@@ -1,0 +1,13 @@
+{% extends 'planner/base.html' %}
+{% block content %}
+<div class="w3-card">
+<h3>
+  Thank you, {{ visitor }}, for your email.
+  {% if success %}
+    It has been sent successfully.
+  {% else %}
+    Unfortunately, there is a problem in sending it. Please try again later.  We apologize for the inconvenience.
+  {% endif %}
+</h3>
+</div>
+{% endblock content %}

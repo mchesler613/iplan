@@ -1,0 +1,32 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<h1>Meeting for <a href="{% url 'planner:meeting_list' person.pk %}">{{ person.name }}</a></h1>
+<form class="w3-container w3-margin w3-padding" method="post">
+  {% csrf_token %}
+  <p>
+  <strong>
+    Are you sure you want to delete this meeting? Perhaps you just want to remove yourself from the meeting? If so, try <a href="{% url 'planner:meeting_update_form' meeting.pk person.pk %}">edit</a> your meeting instead.
+  </strong>
+  </p>
+  <table class="w3-table-all w3-hoverable">
+    <tr>
+      <th>Title</th>
+      <th>Purpose</th>
+      <th>When</th>
+      <th>With</th>
+    </tr>
+    <tr>
+      <td>{{ meeting.title }}</td>
+      <td>{{ meeting.purpose }}</td>
+      <td>{{ meeting.date }} {{ meeting.time }}</td>
+      <td>{{ meeting.participants.all|join:', ' }}</td>
+    </tr>
+  </table>
+  <br>
+  <button class="w3-btn w3-light-gray">Delete</button>
+</form>
+{% endblock content %}
+

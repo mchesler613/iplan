@@ -1,0 +1,17 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<h1>Edit Meeting for <a href="{% url 'planner:person_detail' person.pk %}">{{ person.name }}</a></h1>
+<p>Today's Date and Time: {{ time_now }}</p>
+<form class="w3-container w3-margin w3-padding" method="post">
+  {% csrf_token %}
+  <table class="w3-table-all">
+  {{ form }}
+  </table>
+  <br>
+  <button class="w3-btn w3-light-gray">Save</button>
+</form>
+{% endblock content %}
+

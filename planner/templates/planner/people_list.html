@@ -1,0 +1,50 @@
+{% extends "planner/base.html" %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<h2>People Directory</h2>
+<div class="wc-container w3-responsive">
+  <table class="w3-table-all w3-hoverable">
+    <tr class="w3-theme-l1">
+      <th>Name</th>
+      <th>Bio</th>
+      <th>Contact</th>
+      <th>Status</th>
+    </tr>
+    {% for person in object_list %}
+      <!-- Need to use appname:view in url -->
+      <tr>
+        <td>
+          <a href="{% url 'planner:person_detail' person.pk %}">{{ person.name }}</a>
+        </td>
+        <td>
+          {{ person.bio }} 
+        </td>
+        <td>
+          {{ person.email }} 
+        </td>
+        <td>
+          {{ person.get_status_display }}
+        </td>
+      </tr>
+    {% empty %}
+      No people yet.
+    {% endfor %}
+
+  </table>
+  <div class="w3-center">
+    <div class="w3-bar w3-border w3-round">
+      {% if page_obj.has_previous %}
+        <a class="w3-button" href="?page=1">&laquo;</a>
+        <a class="w3-button" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+      {% endif %}
+      <a class="w3-button w3-red">{{ page_obj.number }}</a>
+      {% if page_obj.has_next %}
+        <a class="w3-button" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+        <a class="w3-button" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}
