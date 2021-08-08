@@ -4,6 +4,9 @@
 $ pip install python-dotenv
 $ pip install django-simple-captcha
 $ pip install django-extensions
+$ pip install python-dateutil
+$ pip install requests
+$ pip install requests_oauthlib
 ```
 ## Define the environment file for python-dotenv in project settings
 In **iplan/settings.py** file, define the variable `ENV_FILE` which is the location of the environment file settings for your `dotenv` package:

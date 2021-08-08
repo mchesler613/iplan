@@ -181,3 +181,6 @@ GITHUB_OAUTH_CLIENT_ID = '19c63d688f97d86f2cdf'
 GITHUB_OAUTH_SECRET = 'b4220eb256f9c019906bd9421b71c9ea031366bd'
 GITHUB_OAUTH_CALLBACK_URL = 'https://aws.djangodemo.com/iplan/github_callback'
 GITHUB_OAUTH_SCOPES = []
+
+# To comply with warnings for 3.2.3+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
