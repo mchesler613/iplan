@@ -9,7 +9,7 @@ $ pip install requests
 $ pip install requests_oauthlib
 ```
 ## Define the environment file for python-dotenv in project settings
-In **iplan/settings.py** file, define the variable `ENV_FILE` which is the location of the environment file settings for your `dotenv` package:
+In **iplan/prod_settings.py** file, define the variable `ENV_FILE` which is the location of the environment file settings for your `dotenv` package:
 ```
 ENV_FILE = str(Path(BASE_DIR)) + 'environment_file_name'
 ```
@@ -131,7 +131,7 @@ EMAIL_USE_TSL = True
 EMAIL_HOST_PASSWORD = myvars['EMAIL_HOST_PASSWORD']
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ```
-10. Add the sensitive variables in the file defined in the variable `ENV_FILE` in **settings.py**.
+10. Add the sensitive variables in the file defined in the variable `ENV_FILE` in **settings.py** and **prod_settings.py**.
 ```
 EMAIL_HOST='your_email_host'
 EMAIL_HOST_USER='your_email_host_user'
@@ -174,7 +174,7 @@ For example:
 ```
 
 ## Static Files
-+ Add a definition for `STATIC_URL` and `STATIC_ROOT` in **iplan/settings.py**. For example:
++ Add a definition for `STATIC_URL` and `STATIC_ROOT` in **iplan/prod_settings.py**. For example:
 ```py
 # Static File settings
 STATIC_URL = '/static/'
