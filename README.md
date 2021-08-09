@@ -103,7 +103,7 @@ Include '/opt/bitnami/projects/iplan/conf/httpd-app.conf'
 Include "/opt/bitnami/apache/conf/bitnami/bitnami-ssl.conf"
 ```
 
-9. Edit the **iplan/settings.py** file 
+9. Edit the **iplan/prod_settings.py** file for production.
 ```
 # Static File settings
 STATIC_URL = '/static/'
@@ -120,7 +120,7 @@ ALLOWED_HOSTS = ['yourdjangosite.com']
 
 # Settings for Django send_mail()
 SITE_URL = 'yourdjangosite.com'
-ENV_FILE=str(Path(BASE_DIR)) + 'your_environment_file'
+ENV_FILE=str(Path(BASE_DIR)) + 'your_environment_file_name'
 from dotenv import dotenv_values
 myvars = dotenv_values(ENV_FILE)
 EMAIL_HOST = myvars['EMAIL_HOST'] 
@@ -156,7 +156,7 @@ $ python manage.py createsuperuser
 15. Test the admin login at `http://yourdangosite.com/iplan/planner/admin` and login as superuser
 
 ## Server Timezone
-Setting the timezone for your server. See this [link](https://it.playswellwithflavors.com/2020/03/25/bitnami-set-timezone/) for instructions.
+This version of iPlan assumes everyone is on the same timezone. To set the timezone for your server, visit this [link](https://it.playswellwithflavors.com/2020/03/25/bitnami-set-timezone/) for instructions.
 
 ## Cron jobs
 + Setting cronjobs. The file to edit is **/etc/cron.d/your_file_name**. See this [source](https://forums.aws.amazon.com/thread.jspa?threadID=126088).
