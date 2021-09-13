@@ -30,8 +30,7 @@ SECRET_KEY = myvars['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-#ALLOWED_HOSTS = ['localhost', '54.156.224.175', 'aws.djangodemo.com']
+ALLOWED_HOSTS = ['your production site']
 
 
 # Application definition
@@ -152,13 +151,8 @@ LOGIN_URL = '/planner/login'
 ACCOUNT_ACTIVATION_DAYS = 1
 
 # send_mail settings
-SITE_URL = 'aws.djangodemo.com'
-'''
-To export EMAIL_HOST_PASSWORD, type at the terminal
-$ export EMAIL_HOST_PASSWORD='Your password here'
-Restart the Django server from the terminal
-$ python manage.py runserver
-'''
+SITE_URL = 'your production site'
+
 # Settings for Django send_mail()
 EMAIL_HOST = myvars['EMAIL_HOST'] 
 EMAIL_PORT = 587
