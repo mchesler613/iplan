@@ -31,8 +31,6 @@ SECRET_KEY = myvars['SECRET_KEY']
 DEBUG = True #True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-#ALLOWED_HOSTS = ['localhost', '54.156.224.175', 'aws.djangodemo.com']
-
 
 # Application definition
 
